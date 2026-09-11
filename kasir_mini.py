@@ -10,7 +10,13 @@ def add_item(shopping_cart, item_name, item_price, item_quantity):
     shopping_cart['Name of Item'].append(item_name)
     shopping_cart['Price of Item'].append(item_price)
     shopping_cart['Quantity of Item'].append(item_quantity)
+    global num_of_items
     num_of_items += 1
+    if len(shopping_cart['Name of Item']) == num_of_items and len(shopping_cart['Price of Item']) == num_of_items and len(shopping_cart['Quantity of Item']) == num_of_items:
+          print("Item added successfully!")
+          return 
+    else:
+          print("Failed to add item.")
 
 def list_items(shopping_cart, num_of_items):
      for i in range(num_of_items):
@@ -59,10 +65,6 @@ while m == 0:
             print("Invalid input. Please enter a valid quantity.")
             continue
           add_item(shopping_cart, item, price, quantity)
-          if len(shopping_cart['Name of Item']) == num_of_items and len(shopping_cart['Price of Item']) == num_of_items and len(shopping_cart['Quantity of Item']) == num_of_items:
-                print("Item added successfully!")
-          else:
-                print("Failed to add item.")
     elif choose == 2:
       if num_of_items == 0:
            print("No items in the shopping cart.")
