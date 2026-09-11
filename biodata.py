@@ -1,0 +1,16 @@
+nama = input("What is your name? ")
+kota_asal = input("Where are you from? ")
+tahun_lahir = int(input("What year were you born? "))
+hobi = input("What are your hobbies? ")
+
+print("===================================")
+print("            BIODATA                ")
+print("===================================")
+print("Name: " + nama)
+print("City: " + kota_asal)
+print("Year of Birth: " + str(tahun_lahir))
+print("Age: " + str(2026 - tahun_lahir))
+print("Hobbies: " + hobi)
+print("Age(in months): " + str(12 * (2026 - tahun_lahir)))
+print("===================================")
+
