@@ -2,7 +2,7 @@
 total_belanja = int(input("Total Belanja : "))
 total_dibayar = int(input("Uang Dibayar : "))
 print(f"Uang cukup {total_dibayar>=total_belanja}")
-print(f"Kekurangan : {total_belanja-total_dibayar}")
+print(f"Kekurangan : {total_belanja > total_dibayar and total_belanja-total_dibayar or 0}")
 kembalian = total_dibayar>=total_belanja and total_dibayar-total_belanja or 0
 print(f"Kembalian : {kembalian or 0}")
 lem1 = kembalian//100000
