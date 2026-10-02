@@ -12,7 +12,7 @@
 # Pelayan (API) membawa pesanan (response) ke kita (User)
 
 # Request bisa berupa : GET, POST, PUT, DELETE(ini disebut dengan HTTP, jadi HTTP itu adalah metode atau cara user mengirimkan request ke server)
-# GET : Mengambil data dari server (paling sering digunakan)
+# GET : Mengambil data dari server (paling sering digunakan, untuk menampilkan data ke web)
 # POST : Mengirim data ke server untuk dibuat (misal: membuat akun baru, mengirim formulir, register)
 # PUT : Memperbarui data yang sudah ada di server (misal: edit profil)
 # DELETE : Menghapus data di server (misal: hapus akun, hapus postingan)
