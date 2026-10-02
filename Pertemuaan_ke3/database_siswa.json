@@ -1,0 +1,20 @@
+[
+  {
+    "nis": "1001",
+    "nama": "Andi",
+    "kelas": "10A",
+    "nilai": 88
+  },
+  {
+    "nis": "1002",
+    "nama": "Siti",
+    "kelas": "10B",
+    "nilai": 92
+  },
+  {
+    "nis": "1003",
+    "nama": "Budi",
+    "kelas": "10A",
+    "nilai": 85
+  }
+]
