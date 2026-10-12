@@ -7,36 +7,6 @@ app = Flask(__name__)
 
 
 
-#Pembuatan Class Note 
-
-
-# class Notes():
-#     def __init__(self, id_note, deskripsi, status):
-#         id_note = id_note
-#         deskripsi = deskripsi
-#         status = status
-#         create_at = datetime.now()
-#         delete_at = None
-#         update_at = None
-    
-
-#     #Buat method untuk menyimpan ke dalam database 
-#     def save_data(data):
-#         with open("catatan.json", "w") as f:
-#             json.dump(data, f)
-    
-#     def info(self):
-#         return {
-#             "id_note": self.id_note,
-#             "deskripsi": self.deskripsi,
-#             "status": self.status,
-#             "create_at": self.create_at,
-#             "delete_at": self.delete_at,
-#             "update_at": self.update_at,
-#         }
-
-
-#read 
 @app.route("/", methods = ["GET"])
 def beranda ():    
     return "Hallo Ini Merupakan System API REST"
@@ -66,7 +36,7 @@ def getNoteByID(id_note):
         data = json.load(f)
         #Mencari data berdasarkan ID yang di input 
 
-    #Kita harus membalikan 404 apabila data tidak di temukan dan kalau kosong kita harus balikan nilai 400 
+    #Kita harus membalikan 404 apabila data tidak di temukan dan kalau id == 0  kita harus balikan nilai 400 
     if id_note == 0:
         return jsonify({
 
@@ -88,6 +58,7 @@ def getNoteByID(id_note):
             "message": "Data Tidak Di Temukan",
         }), 404
 
+# Create
 @app.route("/create_note", methods=["POST"])
 def createNote():
     ## Membuka Json Database dengan penanganan jika file kosong
@@ -98,7 +69,7 @@ def createNote():
         data_lama = []
 
     ## Menerima Data 
-    data = request.get_json()
+    data = request.get_json() # get_json() buat nangkep data yang dikirim sama user, biasanya bentuknya dicts
     id_note = data["id_note"]
     deskripsi = data["deskripsi"]
     status = data["status"]
@@ -106,8 +77,6 @@ def createNote():
     data_baru = {"id_note": id_note, "deskripsi": deskripsi, "status": status}   
     
     # Append Data 
-
-
     data_lama.append(data_baru)
 
     # Simpan kembali ke dalam Database (uncomment bagian ini)
