@@ -56,6 +56,7 @@ class Note(Base): # Ini adalah model untuk tabel notes
             "create_at": self.create_at.isoformat() if self.create_at else None,
             "update_at": self.update_at.isoformat() if self.update_at else None,
         }
+
 # Let's try to make the user table, first define the class
 class User(Base): # Ini adalah model untuk tabel user
     __tablename__ = "users_buatanORM"
@@ -68,7 +69,7 @@ class User(Base): # Ini adalah model untuk tabel user
     create_at : Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     update_at : Mapped[datetime | None] = mapped_column(DateTime, onupdate=datetime.now)
 
-    def info(self):
+    def info_user(self):
         return {
             "id_user": self.id_user,
             "username": self.username,
@@ -78,11 +79,13 @@ class User(Base): # Ini adalah model untuk tabel user
             "update_at": self.update_at.isoformat() if self.update_at else None,
         }   
 
+
 # Membuat tabel otomatis apabila belum ada(membuat object from Noet class)
 Base.metadata.create_all(engine) # Ini adalah perintah untuk membuat tabel di database
 
-
-# ==================================== API(For the Note Table, for the user table we need to make another REST API ) ====================================
+# ==================================== API(For the Note Table) ====================================
+# NOTEE:
+# for the user table(User class) and pelatihan table(Pelatihan class) we need to make another REST API
 
 @app.route("/", methods=["GET"]) # Ini adalah perintah untuk menampilkan halaman utama
 def main(): # Ini adalah fungsi untuk menampilkan halaman utama
@@ -108,17 +111,17 @@ def create_note():
             }
         ), 400
         
-    # simpan data ke database (menggunakan Session)
-    with Session(engine) as session:
-        new_note = Note(deskripsi=deskripsi, status=data.get("status", "TODO"))
-        session.add(new_note)
-        session.commit()
+    # Acess database(menggunakan Session)
+    with Session(engine) as session: # membuat session baru
+        new_note = Note(deskripsi=deskripsi, status=data.get("status", "TODO")) # membuat objek baru berdasarkan class note yg sudah dibuat
+        session.add(new_note) # menambahkan objek baru ke database
+        session.commit() # menyimpan perubahan 
         
         return jsonify(
             {
                 "status": 200,
                 "message": "Data berhasil ditambahkan",
-                "data": new_note.info(),
+                "data": new_note.info() # .info() is the method that we created in the class note to return the data in the form of json
             }
         ), 200
 
@@ -130,7 +133,7 @@ def create_note():
 def read_note(note_id): # Ini adalah fungsi untuk mengambil data berdasarkan primary key
     with Session(engine) as session:
         # ambil data berdasarkan primary key
-        note = session.get(Note, note_id)
+        note = session.get(Note, note_id) # untuk mengambil data berdasarkan primary key, yg dikembalikan adalah objek 
         
         if not note:
             return jsonify(
@@ -155,13 +158,18 @@ def read_note(note_id): # Ini adalah fungsi untuk mengambil data berdasarkan pri
 def read_note_list(): # Ini adalah fungsi untuk mengambil data berdasarkan primary key
     with Session(engine) as session:
         # select data menggunakan SQLAlchemy core
-        notes = session.scalars(select(Note).order_by(Note.id_note)).all()
+        notes = session.scalars(select(Note).order_by(Note.id_note)).all() # this is getting the data from the table note by getting the id_note(the primary key)
+        # this is like the "SELECT *FROM notes ORDER BY id_note;" in mysql but for python using SQLAlchemy
+        #  - select(Note) → Selects all columns from the notes table.
+        #  - .order_by(Note.id_note) → Sorts the results by id_note in ascending order.
+        #  - session.scalars(...) → Executes the query and returns each record as a Note object.
+        #  - .all() → Collects all the results into a Python list.
         
         return jsonify(
             {
                 "status": 200,
                 "message": "Data berhasil diambil",
-                "data": [note.info() for note in notes],
+                "data": [note.info() for note in notes] # this is like mapping, notes contain objects(the data) and objects will call info() method
             }
         ), 200
 
@@ -175,7 +183,7 @@ def update_note(note_id): # Ini adalah fungsi untuk mengupdate data berdasarkan 
     new_input = request.get_json() or {}
     
     with Session(engine) as session:
-        note = session.get(Note, note_id)
+        note = session.get(Note, note_id) # mendapatkan objek note yang ingin diupdate
         
         if not note:
             return jsonify(
@@ -187,12 +195,12 @@ def update_note(note_id): # Ini adalah fungsi untuk mengupdate data berdasarkan 
             ), 404
         
         # update field jika dikirim
-        if "deskripsi" in new_input:
-            note.deskripsi = new_input["deskripsi"]
+        if "deskripsi" in new_input: 
+            note.deskripsi = new_input["deskripsi"] # mengupdate data 
         if "status" in new_input:
-            note.status = new_input["status"]
+            note.status = new_input["status"] # mengupdate data
         
-        session.commit()
+        session.commit() # menyimpan perubahan 
         
         return jsonify(
             {
@@ -209,7 +217,7 @@ def update_note(note_id): # Ini adalah fungsi untuk mengupdate data berdasarkan 
 @app.route("/delete_note/<int:note_id>", methods=["DELETE"]) # Ini adalah perintah untuk menghapus data berdasarkan primary key
 def delete_note(note_id): # Ini adalah fungsi untuk menghapus data berdasarkan primary key
     with Session(engine) as session:
-        note = session.get(Note, note_id)
+        note = session.get(Note, note_id) # mendapatkan objek note yang ingin dihapus 
         
         if not note:
             return jsonify(
@@ -221,8 +229,8 @@ def delete_note(note_id): # Ini adalah fungsi untuk menghapus data berdasarkan p
             ), 404
         
         # delete data
-        session.delete(note)
-        session.commit()
+        session.delete(note) # menghapus objek note 
+        session.commit() # menyimpan perubahan 
         
         return jsonify(
             {
@@ -232,6 +240,130 @@ def delete_note(note_id): # Ini adalah fungsi untuk menghapus data berdasarkan p
             }
         ), 200
 
+# ==================================== API(For the User Table) ====================================
+# CREATE USER
+@app.route("/create_user", methods=["POST"])
+def create_user():
+     # ambil data dari user
+    data_user = request.get_json(silent=True) or {}
+    user_name = data_user["username"]
+    user_email = data_user["email"]
+    user_password = data_user["password"]
+
+    if not user_name or not user_email or not user_password:
+        return jsonify(
+            {
+                "status": 400,
+                "message": "Data user tidak lengkap",
+                "data": None,
+            }
+        ), 400
+    
+    # Access database
+    with Session(engine) as session:
+        new_user = User(username=user_name, email=user_email, password=user_password)
+        session.add(new_user)
+        session.commit()
+        return jsonify(
+            {
+                "status": 200,
+                "message": "Data berhasil ditambahkan",
+                "data": new_user.info_user(),
+            }
+        ), 200
+
+# READ USER by id
+@app.route("/read_user/<int:user_id>", methods=["GET"])
+def read_user(user_id):
+    with Session(engine) as session:
+        user_byid = session.get(User, user_id) # untuk mengambil data berdasarkan primary key, yg dikembalikan adalah objek 
+        if not user_byid:
+            return jsonify(
+                {
+                    "status": 404,
+                    "message": "Data tidak ditemukan",
+                    "data": None,
+                }
+            ), 404
+        return jsonify(
+            {
+                "status": 200,
+                "message": "Data berhasil diambil",
+                "data": user_byid.info_user() ,
+            }
+        ), 200
+# READ all user list
+@app.route("/read_user", methods=["GET"])
+def read_user_list():
+    with Session(engine) as session:
+        users = session.scalars(select(User).order_by(User.id_user)).all()
+        if not users:
+            return jsonify(
+                {
+                    "status": 404,
+                    "message": "Data tidak ditemukan",
+                    "data": None,
+                }
+            ), 404
+        return jsonify(
+            {
+                "status": 200,
+                "message": "Data berhasil diambil",
+                "data": [user.info_user() for user in users] ,
+            }
+        ), 200
+# Update USER
+@app.route("/update_user/<int:user_id>", methods=["PUT"])
+def update_user(user_id):
+    new_input = request.get_json() or {}
+    with Session(engine) as session:
+        user_byid = session.get(User, user_id) # untuk mengambil data berdasarkan primary key, yg dikembalikan adalah objek 
+        if not user_byid:
+            return jsonify(
+                {
+                    "status": 404,
+                    "message": "Data tidak ditemukan",
+                    "data": None,
+                }
+            ), 404
+        # update field jika dikirim 
+        if "username" in new_input:
+            user_byid.username = new_input["username"]
+        if "email" in new_input:
+            user_byid.email = new_input["email"]
+        if "password" in new_input:
+            user_byid.password = new_input["password"]
+        
+        session.commit()
+        return jsonify(
+            {
+                "status": 200,
+                "message": "Data berhasil diupdate",
+                "data": user_byid.info_user() 
+            }
+        ), 200
+# DELETE USER
+@app.route("/delete_user/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    with Session(engine) as session:
+        user_byid = session.get(User, user_id) # untuk mengambil data berdasarkan primary key, yg dikembalikan adalah objek 
+        if not user_byid:
+            return jsonify(
+                {
+                    "status": 404,
+                    "message": "Data tidak ditemukan",
+                    "data": None,
+                }
+            ), 404
+        session.delete(user_byid)
+        session.commit()
+        return jsonify(
+            {
+                "status": 200,
+                "message": "Data berhasil dihapus",
+                "data": user_byid.info_user() 
+            }
+        ), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
