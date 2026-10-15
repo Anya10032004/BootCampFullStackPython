@@ -125,12 +125,15 @@ def create_penulis():
     with Session(engine) as session:
         # Create the object based on the class note that we created
         lists = session.scalars(select(Penulis).order_by(Penulis.id_penulis)).all()
-        if email in lists:
-            return jsonify({
-                "message": "Email sudah terdaftar",
-                "status": 400,
-                "data": None
-            }), 400
+        
+        # check if the email is already exist
+        for e in lists:
+            if e.email == email:
+                return jsonify({
+                    "message": "Email already exist",
+                    "status": 400,
+                    "data": None
+                }), 400
         new_note = Penulis(nama_penulis=nama, email=email)
         session.add(new_note)
         session.commit()
@@ -200,7 +203,7 @@ def update_penulis(id_penulis):
                     "status": 200,
                     "data": note.info_penulis()
                 }), 200 
-        
+    
         return jsonify({
             "message": "Data tidak ditemukan",
             "status": 404,
@@ -230,17 +233,255 @@ def delete_penulis(id_penulis):
 
 # -------------------------------------------------------- Kategori ----------------------------------------
 # Create
+@app.route("/api/kategori", methods = ["POST"])
+def create_kategori():
+    input_data = request.get_json(silent = True) or {}
+    nama = input_data.get("nama_kategori")
+    deskripsi = input_data.get("deskripsi")
+    
+    # If there is an input that missing, return an error
+    if not nama and not deskripsi:
+        return jsonify({
+            "message": "Input data missing",
+            "status": 400,
+            "data": None
+        }), 400
+    
+    with Session(engine) as session:
+        # Create the object based on the class note that we created
+        lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
+        
+        # check if the nama is already exist
+        for n in lists:
+            if n.nama_kategori == nama:
+                return jsonify({
+                    "message": "Nama already exist",
+                    "status": 400,
+                    "data": None
+                }), 400
+        new_note = Kategori(nama_kategori=nama, deskripsi=deskripsi)
+        session.add(new_note)
+        session.commit()
+        
+        return jsonify({
+            "message": "Data successfully added",
+            "status": 200,
+            "data": new_note.info_penulis()
+        }), 200
+
 # Read all
+@app.route("/api/kategori", methods = ["GET"])
+def read_kategori():
+    with Session(engine) as session:
+        lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
+        return jsonify({
+            "message": "Data berhasil diambil",
+            "status": 200,
+            "data": [note.info_kategori() for note in lists]
+        }), 200
 # Read by id
+@app.route("/api/kategori/<int:id_kategori>", methods = ["GET"])
+def read_kategori_id(id_kategori):
+    with Session(engine) as session:
+        lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
+        for note in lists:
+            if note.id_kategori == id_kategori:
+                return jsonify({
+                    "message": "Data berhasil diambil",
+                    "status": 200,
+                    "data": note.info_kategori()
+                }), 200 
+        return jsonify({
+            "message": "Data tidak ditemukan",
+            "status": 404,
+            "data": None
+        }), 404 
 # Update
+@app.route("/api/kategori/<int:id_kategori>", methods = ["PUT"])
+def update_kategori(id_kategori):
+    input_data = request.get_json(silent = True) or {}
+    name = input_data.get("nama_kategori")
+    description = input_data.get("deskripsi")
+    
+    if not name and not description:
+        return jsonify({
+            "message": "Input data missing",
+            "status": 400,
+            "data": None
+        }), 400
+    
+    with Session(engine) as session:
+        lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
+        for note in lists:
+            if note.id_kategori == id_kategori:
+                if "nama_kategori" in input_data:
+                    note.nama_kategori = input_data["nama_kategori"]
+                if "deskripsi" in input_data:
+                    note.deskripsi = input_data["deskripsi"]
+                session.commit()
+                return jsonify({
+                    "message": "Data berhasil diupdate",
+                    "status": 200,
+                    "data": note.info_kategori()
+                }), 200 
+        return jsonify({
+            "message": "Data tidak ditemukan",
+            "status": 404,
+            "data": None
+        }), 404 
 # Delete
+@app.route("/api/kategori/<int:id_kategori>", methods = ["DELETE"])
+def delete_kategori(id_kategori):
+    with Session(engine) as session:
+        lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
+        for note in lists:
+            if note.id_kategori == id_kategori:
+                session.delete(note)
+                session.commit()
+                return jsonify({
+                    "message": "Data berhasil dihapus",
+                    "status": 200,
+                    "data": note.info_kategori()
+                }), 200 
+        return jsonify({
+            "message": "Data tidak ditemukan",
+            "status": 404,
+            "data": None
+        }), 404 
 
 # -------------------------------------------------------- Buku ----------------------------------------
 # Create
+@app.route("/api/buku", methods = ["POST"])
+def create_buku():
+    input_data = request.get_json(silent = True) or {}
+    judul = input_data.get("judul")
+    penulis = input_data.get("penulis")
+    kategori = input_data.get("kategori")
+    isbn = input_data.get("isbn")
+    jumlah_buku = input_data.get("jumlah_buku")
+    
+    if not judul and not penulis and not kategori and not isbn and not jumlah_buku:
+        return jsonify({
+            "message": "Input data missing",
+            "status": 400,
+            "data": None
+        }), 400
+    
+    with Session(engine) as session:
+        # Create the object based on the class note that we created
+        lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
+        for a in lists:
+            if a.judul == judul:
+                return jsonify({
+                    "message": "Judul sudah terdaftar",
+                    "status": 400,
+                    "data": None
+                }), 400
+            if a.isbn == isbn:
+                return jsonify({
+                    "message": "ISBN already exist",
+                    "status": 400,
+                    "data": None
+                }), 400
+        new_buku = Buku(judul=judul, penulis=penulis, kategori=kategori, isbn=isbn, jumlah_buku=jumlah_buku)
+        session.add(new_buku)
+        session.commit()
+        return jsonify({
+            "message": "Data successfully added",
+            "status": 200,
+            "data": new_buku.info_buku()
+        }), 200
+
 # Read all
+@app.route("/api/buku", methods = ["GET"])
+def read_buku():
+    with Session(engine) as session:
+        lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
+        return jsonify({
+            "message": "Data successfully retrived",
+            "status": 200,
+            "data": [note.info_buku() for note in lists]
+        }), 200
 # Read by id
+@app.route("api/buku/<int:id_buku>", methods = ["GET"])
+def read_buku_id(id_buku):
+    with Session(engine) as session:
+        lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
+        for a in lists:
+            if a.id_buku == id_buku:
+                return jsonify({
+                    "message": "Data successfully retrived",
+                    "status": 200,
+                    "data": a.info_buku()
+                }), 200 
+        return jsonify({
+            "message": "Data not found",
+            "status": 404,
+            "data": None
+        }), 404 
 # Update
+@app.route("api/buku/<int:id_buku>", methods = ["PUT"])
+def update_buku(id_buku):
+    input_data = request.get_json(silent = True) or {}
+    judul = input_data.get("judul")
+    penulis = input_data.get("penulis")
+    kategori = input_data.get("kategori")
+    isbn = input_data.get("isbn")
+    jumlah_buku = input_data.get("jumlah_buku")
+    
+    if not judul and not penulis and not kategori and not isbn and not jumlah_buku:
+        return jsonify({
+            "message": "Input data missing",
+            "status": 400,
+            "data": None
+        }), 400
+    
+    with Session(engine) as session:
+        # Create the object based on the class note that we created
+        lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
+        for a in lists:
+            if a.id_buku == id_buku:
+                if "judul" in input_data:
+                    a.judul = input_data["judul"]
+                if "penulis" in input_data:
+                    a.penulis = input_data["penulis"]
+                if "kategori" in input_data:
+                    a.kategori = input_data["kategori"]
+                if "isbn" in input_data:
+                    a.isbn = input_data["isbn"]
+                if "jumlah_buku" in input_data:
+                    a.jumlah_buku = input_data["jumlah_buku"]
+                session.commit()
+                return jsonify({
+                    "message": "Data successfully updated",
+                    "status": 200,
+                    "data": a.info_buku()
+                }), 200 
+        return jsonify({
+            "message": "Data not found",
+            "status": 404,
+            "data": None
+        }), 404 
 # Delete
+@app.route("api/buku/<int:id_buku", methods = ["DELETE"])
+def delete_buku(id_buku):
+    with Session(engine) as session:
+        lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
+        for a in lists:
+            if a.id_buku == id_buku:
+                session.delete(a)
+                session.commit()
+                return jsonify({
+                    "message": "Data successfully deleted",
+                    "status": 200,
+                    "data": a.info_buku()
+                }), 200 
+        return jsonify({
+            "message": "Data not found",
+            "status": 404,
+            "data": None
+        }), 404 
+
 
 if __name__ == "__main__":
     app.run(debug=True)
