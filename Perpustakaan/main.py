@@ -111,12 +111,14 @@ def create_penulis():
 
     # Gettting the input from user
     input_data = request.get_json(silent=True) or {}
+    id_penulis = input_data.get("id_penulis")
     nama = input_data.get("nama_penulis")
     email = input_data.get("email")
 
     # if there is an input that missing, return an error
     if not nama or not email:
         return jsonify({
+            "status": "error",
             "message": "Input data missing",
             "status": 400,
             "data": None
@@ -124,6 +126,16 @@ def create_penulis():
 
     # Access the database
     with Session(engine) as session:
+
+        # check duplicate id
+        check_id = session.get(Penulis, id_penulis)
+        if check_id != None:
+            return jsonify({
+                    "status": "error",
+                    "message": "ID already exist",
+                    "status": 409,
+                    "data": None
+                }), 409
         # Create the object based on the class note that we created
         lists = session.scalars(select(Penulis).order_by(Penulis.id_penulis)).all()
         
@@ -131,15 +143,18 @@ def create_penulis():
         for e in lists:
             if e.email == email:
                 return jsonify({
+                    "status": "error",
                     "message": "Email already exist",
-                    "status": 400,
+                    "status": 409,
                     "data": None
-                }), 400
-        new_note = Penulis(nama_penulis=nama, email=email)
+                }), 409
+
+        new_note = Penulis(nama_penulis=nama, email=email, id_penulis = id_penulis)
         session.add(new_note)
         session.commit()
         
         return jsonify({
+            "status": "success",
             "message": "Data berhasil ditambahkan",
             "status": 200,
             "data": new_note.info_penulis()
@@ -152,12 +167,14 @@ def read_penulis():
         lists = session.scalars(select(Penulis).order_by(Penulis.id_penulis)).all()
         if lists != []:
             return jsonify({
+                "status": "success",
                 "message": "Data berhasil diambil",
                 "status": 200,
                 "data": [note.info_penulis() for note in lists]
             }), 200 
         else:
             return jsonify({
+                "status": "error",
                 "message": "Data is empty",
                 "status": 200,
                 "data": None
@@ -172,11 +189,13 @@ def read_penulis_id(id_penulis):
         for note in lists:
             if note.id_penulis == id_penulis:
                 return jsonify({
+                    "status": "success",
                     "message": "Data berhasil diambil",
                     "status": 200,
                     "data": note.info_penulis()
                 }), 200 
         return jsonify({
+            "status": "error",
             "message": "Data tidak ditemukan",
             "status": 404,
             "data": None
@@ -193,6 +212,7 @@ def update_penulis(id_penulis):
     # If there is an input that missing, return an error
     if not nama and not email:
         return jsonify({
+            "status": "error",
             "message": "Input data missing",
             "status": 400,
             "data": None
@@ -208,12 +228,14 @@ def update_penulis(id_penulis):
                     note.email = new_input["email"]
                 session.commit()
                 return jsonify({
+                    "status": "success",
                     "message": "Data berhasil diupdate",
                     "status": 200,
                     "data": note.info_penulis()
                 }), 200 
     
         return jsonify({
+            "status": "error",
             "message": "Data tidak ditemukan",
             "status": 404,
             "data": None
@@ -229,12 +251,14 @@ def delete_penulis(id_penulis):
                 session.delete(note)
                 session.commit()
                 return jsonify({
+                    "status": "success",
                     "message": "Data berhasil dihapus",
                     "status": 200,
                     "data": note.info_penulis()
                 }), 200 
     
         return jsonify({
+            "status": "error",
             "message": "Data tidak ditemukan",
             "status": 404,
             "data": None
@@ -245,18 +269,26 @@ def delete_penulis(id_penulis):
 @app.route("/create/kategori", methods = ["POST"])
 def create_kategori():
     input_data = request.get_json(silent = True) or {}
+    id_kategori = input_data.get("id_kategori")
     nama = input_data.get("nama_kategori")
     deskripsi = input_data.get("deskripsi")
     
     # If there is an input that missing, return an error
     if not nama and not deskripsi:
         return jsonify({
+            "status": "error",
             "message": "Input data missing",
-            "status": 400,
             "data": None
         }), 400
     
     with Session(engine) as session:
+        check_id = session.get(Kategori, id_kategori)
+        if check_id != None:
+            return jsonify({
+                    "status": "error",
+                    "message": "ID already exist",
+                    "data": None
+                }), 409
         # Create the object based on the class note that we created
         lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
         
@@ -264,15 +296,17 @@ def create_kategori():
         for n in lists:
             if n.nama_kategori == nama:
                 return jsonify({
+                    "status": "error",
                     "message": "Nama already exist",
-                    "status": 400,
+                    "status": 409,
                     "data": None
-                }), 400
+                }), 409
         new_note = Kategori(nama_kategori=nama, deskripsi=deskripsi)
         session.add(new_note)
         session.commit()
         
         return jsonify({
+            "status": "success",
             "message": "Data successfully added",
             "status": 200,
             "data": new_note.info_kategori()
@@ -284,8 +318,8 @@ def read_kategori():
     with Session(engine) as session:
         lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
         return jsonify({
+            "status": "success",
             "message": "Data berhasil diambil",
-            "status": 200,
             "data": [note.info_kategori() for note in lists]
         }), 200
 # Read by id
@@ -296,11 +330,12 @@ def read_kategori_id(id_kategori):
         for note in lists:
             if note.id_kategori == id_kategori:
                 return jsonify({
+                    "status": "success",
                     "message": "Data berhasil diambil",
-                    "status": 200,
                     "data": note.info_kategori()
                 }), 200 
         return jsonify({
+            "status": "error",
             "message": "Data tidak ditemukan",
             "status": 404,
             "data": None
@@ -314,6 +349,7 @@ def update_kategori(id_kategori):
     
     if not name and not description:
         return jsonify({
+            "status": "error",
             "message": "Input data missing",
             "status": 400,
             "data": None
@@ -329,11 +365,13 @@ def update_kategori(id_kategori):
                     note.deskripsi = input_data["deskripsi"]
                 session.commit()
                 return jsonify({
+                    "status": "success",
                     "message": "Data berhasil diupdate",
                     "status": 200,
                     "data": note.info_kategori()
                 }), 200 
         return jsonify({
+            "status": "error",
             "message": "Data tidak ditemukan",
             "status": 404,
             "data": None
@@ -348,13 +386,14 @@ def delete_kategori(id_kategori):
                 session.delete(note)
                 session.commit()
                 return jsonify({
+                    "status": "success",
                     "message": "Data berhasil dihapus",
                     "status": 200,
                     "data": note.info_kategori()
                 }), 200 
         return jsonify({
+            "status": "error",
             "message": "Data tidak ditemukan",
-            "status": 404,
             "data": None
         }), 404 
 
@@ -369,36 +408,44 @@ def create_buku():
     tahun_terbit = input_data.get("tahun_terbit")
     id_penulis = input_data.get("id_penulis")
     id_kategori = input_data.get("id_kategori")
+    id_buku = input_data.get("id_buku")
 
     if not judul and not isbn and not harga_buku and not id_penulis and not id_kategori:
         return jsonify({
+            "status": "error",
             "message": "Input data missing",
-            "status": 400,
             "data": None
         }), 400
     
     with Session(engine) as session:
+        check_id = session.get(Buku, id_buku)
+        if check_id != None:
+            return jsonify({
+                    "status": "error",
+                    "message": "ID already exist",
+                    "data": None
+                }), 409
         # Create the object based on the class note that we created
         lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
         for a in lists:
             if a.judul == judul:
                 return jsonify({
+                    "status": "error",
                     "message": "Judul sudah terdaftar",
-                    "status": 400,
                     "data": None
                 }), 400
             if a.isbn == isbn:
                 return jsonify({
+                    "status": "error",
                     "message": "ISBN already exist",
-                    "status": 400,
                     "data": None
                 }), 400
         new_buku = Buku(judul=judul, id_penulis=id_penulis, id_kategori=id_kategori, isbn=isbn, harga=harga_buku, tahun_terbit = tahun_terbit)
         session.add(new_buku)
         session.commit()
         return jsonify({
+            "status": "success",
             "message": "Data successfully added",
-            "status": 200,
             "data": new_buku.info_buku()
         }), 200
 
@@ -415,51 +462,51 @@ def read_buku():
             for note in lists:
                 if note.id_penulis == penulis_id:
                     return jsonify({
+                        "status": "success",
                         "message": "Data successfully retrived",
-                        "status": 200,
                         "data": [note.info_buku() for note in lists if note.id_penulis == penulis_id]
                     }), 200
             return jsonify({
+                "status": "error",
                 "message": f"Data not found with the penulis id = {penulis_id}",
-                "status": 404,
                  "data": None
             }), 404
         elif kategori_id is not None:
             for note in lists:
                 if note.id_kategori == kategori_id:
                     return jsonify({
+                        "status": "success",
                         "message": "Data successfully retrived",
-                        "status": 200,
                         "data": [note.info_buku() for note in lists if note.id_kategori == kategori_id]
                     }), 200
             return jsonify({
+                "status": "error",
                 "message": f"Data not found with the kategori_id = {kategori_id}",
-                "status": 404,
                 "data": None
             }), 404
         elif judul is not None:
             for note in lists:
                 if note.judul == judul:
                     return jsonify({
+                        "status": "success",
                         "message": "Data successfully retrived",
-                        "status": 200,
-                        "data": [note.info_buku() for note in lists if note.judul.lower() == judul.lower()]
+                        "data": [note.info_buku() for note in lists if judul.strip().lower() in note.judul.strip().lower()  ]
                     }), 200
             return jsonify({
+                "status": "error",
                 "message": f"Data not found with the judul = {judul}",
-                "status": 404,
                 "data": None
             }), 404
             
         else:
             return jsonify({
+                "status": "success",
                 "message": "Data successfully retrived",
-                "status": 200,
                 "data": [note.info_buku() for note in lists]
                 }), 200
     return jsonify({
+            "status": "error",
             "message": "Data not found",
-            "status": 404,
             "data": None
         }), 404 
 # Read by id
@@ -470,13 +517,13 @@ def read_buku_id(id_buku):
         for a in lists:
             if a.id_buku == id_buku:
                 return jsonify({
+                    "status": "success",
                     "message": "Data successfully retrived",
-                    "status": 200,
                     "data": a.info_buku()
                 }), 200 
         return jsonify({
+            "status": "error",
             "message": "Data not found",
-            "status": 404,
             "data": None
         }), 404 
 # Update
@@ -492,8 +539,8 @@ def update_buku(id_buku):
     
     if not judul and not penulis and not kategori and not isbn and not jumlah_buku:
         return jsonify({
+            "status": 'error',
             "message": "Input data missing",
-            "status": 400,
             "data": None
         }), 400
     
@@ -516,13 +563,15 @@ def update_buku(id_buku):
                     a.tahun_tebrit = input_data["tahun_terbit"]
                 session.commit()
                 return jsonify({
+                    "status": "success",
                     "message": "Data successfully updated",
-                    "status": 200,
                     "data": a.info_buku()
                 }), 200 
+
+
         return jsonify({
+            "status": "error",
             "message": "Data not found",
-            "status": 404,
             "data": None
         }), 404 
 # Delete
