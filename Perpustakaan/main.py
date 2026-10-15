@@ -1,3 +1,4 @@
+import requests
 from enum import unique
 from datetime import datetime
 import os
@@ -80,7 +81,7 @@ class Buku(Base): # Ini adalah model untuk tabel notes
     id_kategori: Mapped[int] = mapped_column(ForeignKey('Kategori.id_kategori'))
     
 
-    def info_kategori(self):
+    def info_buku(self):
         return {
             "id_buku" : self.id_buku,
             "judul" : self.judul,
@@ -105,7 +106,7 @@ def index():
     })
 # -------------------------------------------------------- Penulis ----------------------------------------
 # Create
-@app.route("/api/penulis", methods = ["POST"])
+@app.route("/create/penulis", methods = ["POST"])
 def create_penulis():
 
     # Gettting the input from user
@@ -145,18 +146,26 @@ def create_penulis():
         }), 200
 
 # Read all
-@app.route("/api/penulis", methods = ["GET"])
+@app.route("/read/penulis", methods = ["GET"])
 def read_penulis():
     with Session(engine) as session:
         lists = session.scalars(select(Penulis).order_by(Penulis.id_penulis)).all()
-        return jsonify({
-            "message": "Data berhasil diambil",
-            "status": 200,
-            "data": [note.info_penulis() for note in lists]
-        }), 200
+        if lists != []:
+            return jsonify({
+                "message": "Data berhasil diambil",
+                "status": 200,
+                "data": [note.info_penulis() for note in lists]
+            }), 200 
+        else:
+            return jsonify({
+                "message": "Data is empty",
+                "status": 200,
+                "data": None
+            }), 200
+    
         
 # Read by id
-@app.route("/api/penulis/<int:id_penulis>", methods = ["GET"])
+@app.route("/read/penulis/<int:id_penulis>", methods = ["GET"])
 def read_penulis_id(id_penulis):
     with Session(engine) as session:
         lists = session.scalars(select(Penulis).order_by(Penulis.id_penulis)).all()
@@ -175,7 +184,7 @@ def read_penulis_id(id_penulis):
     
     
 # Update
-@app.route("/api/penulis/<int:id_penulis>", methods = ["PUT"])
+@app.route("/update/penulis/<int:id_penulis>", methods = ["PUT"])
 def update_penulis(id_penulis):
     new_input = request.get_json(silent = True) or {}
     nama = new_input.get("nama_penulis")
@@ -211,7 +220,7 @@ def update_penulis(id_penulis):
         }), 404 
     
 # Delete
-@app.route("/api/penulis/<int:id_penulis>", methods = ["DELETE"])
+@app.route("/delete/penulis/<int:id_penulis>", methods = ["DELETE"])
 def delete_penulis(id_penulis):
     with Session(engine) as session:
         lists = session.scalars(select(Penulis).order_by(Penulis.id_penulis)).all()
@@ -233,7 +242,7 @@ def delete_penulis(id_penulis):
 
 # -------------------------------------------------------- Kategori ----------------------------------------
 # Create
-@app.route("/api/kategori", methods = ["POST"])
+@app.route("/create/kategori", methods = ["POST"])
 def create_kategori():
     input_data = request.get_json(silent = True) or {}
     nama = input_data.get("nama_kategori")
@@ -266,11 +275,11 @@ def create_kategori():
         return jsonify({
             "message": "Data successfully added",
             "status": 200,
-            "data": new_note.info_penulis()
+            "data": new_note.info_kategori()
         }), 200
 
 # Read all
-@app.route("/api/kategori", methods = ["GET"])
+@app.route("/read/kategori", methods = ["GET"])
 def read_kategori():
     with Session(engine) as session:
         lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
@@ -280,7 +289,7 @@ def read_kategori():
             "data": [note.info_kategori() for note in lists]
         }), 200
 # Read by id
-@app.route("/api/kategori/<int:id_kategori>", methods = ["GET"])
+@app.route("/read/kategori/<int:id_kategori>", methods = ["GET"])
 def read_kategori_id(id_kategori):
     with Session(engine) as session:
         lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
@@ -297,7 +306,7 @@ def read_kategori_id(id_kategori):
             "data": None
         }), 404 
 # Update
-@app.route("/api/kategori/<int:id_kategori>", methods = ["PUT"])
+@app.route("/update/kategori/<int:id_kategori>", methods = ["PUT"])
 def update_kategori(id_kategori):
     input_data = request.get_json(silent = True) or {}
     name = input_data.get("nama_kategori")
@@ -330,7 +339,7 @@ def update_kategori(id_kategori):
             "data": None
         }), 404 
 # Delete
-@app.route("/api/kategori/<int:id_kategori>", methods = ["DELETE"])
+@app.route("/delete/kategori/<int:id_kategori>", methods = ["DELETE"])
 def delete_kategori(id_kategori):
     with Session(engine) as session:
         lists = session.scalars(select(Kategori).order_by(Kategori.id_kategori)).all()
@@ -351,16 +360,17 @@ def delete_kategori(id_kategori):
 
 # -------------------------------------------------------- Buku ----------------------------------------
 # Create
-@app.route("/api/buku", methods = ["POST"])
+@app.route("/create/buku", methods = ["POST"])
 def create_buku():
     input_data = request.get_json(silent = True) or {}
     judul = input_data.get("judul")
-    penulis = input_data.get("penulis")
-    kategori = input_data.get("kategori")
     isbn = input_data.get("isbn")
-    jumlah_buku = input_data.get("jumlah_buku")
-    
-    if not judul and not penulis and not kategori and not isbn and not jumlah_buku:
+    harga_buku = input_data.get("harga")
+    tahun_terbit = input_data.get("tahun_terbit")
+    id_penulis = input_data.get("id_penulis")
+    id_kategori = input_data.get("id_kategori")
+
+    if not judul and not isbn and not harga_buku and not id_penulis and not id_kategori:
         return jsonify({
             "message": "Input data missing",
             "status": 400,
@@ -383,7 +393,7 @@ def create_buku():
                     "status": 400,
                     "data": None
                 }), 400
-        new_buku = Buku(judul=judul, penulis=penulis, kategori=kategori, isbn=isbn, jumlah_buku=jumlah_buku)
+        new_buku = Buku(judul=judul, id_penulis=id_penulis, id_kategori=id_kategori, isbn=isbn, harga=harga_buku, tahun_terbit = tahun_terbit)
         session.add(new_buku)
         session.commit()
         return jsonify({
@@ -393,17 +403,67 @@ def create_buku():
         }), 200
 
 # Read all
-@app.route("/api/buku", methods = ["GET"])
+@app.route("/read/buku", methods = ["GET"])
 def read_buku():
+    penulis_id = request.args.get("penulis_id", type = int)
+    kategori_id = request.args.get("kategori_id", type = int)
+    judul = request.args.get("q")
+
     with Session(engine) as session:
         lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
-        return jsonify({
-            "message": "Data successfully retrived",
-            "status": 200,
-            "data": [note.info_buku() for note in lists]
-        }), 200
+        if penulis_id is not None:
+            for note in lists:
+                if note.id_penulis == penulis_id:
+                    return jsonify({
+                        "message": "Data successfully retrived",
+                        "status": 200,
+                        "data": [note.info_buku() for note in lists if note.id_penulis == penulis_id]
+                    }), 200
+            return jsonify({
+                "message": f"Data not found with the penulis id = {penulis_id}",
+                "status": 404,
+                 "data": None
+            }), 404
+        elif kategori_id is not None:
+            for note in lists:
+                if note.id_kategori == kategori_id:
+                    return jsonify({
+                        "message": "Data successfully retrived",
+                        "status": 200,
+                        "data": [note.info_buku() for note in lists if note.id_kategori == kategori_id]
+                    }), 200
+            return jsonify({
+                "message": f"Data not found with the kategori_id = {kategori_id}",
+                "status": 404,
+                "data": None
+            }), 404
+        elif judul is not None:
+            for note in lists:
+                if note.judul == judul:
+                    return jsonify({
+                        "message": "Data successfully retrived",
+                        "status": 200,
+                        "data": [note.info_buku() for note in lists if note.judul.lower() == judul.lower()]
+                    }), 200
+            return jsonify({
+                "message": f"Data not found with the judul = {judul}",
+                "status": 404,
+                "data": None
+            }), 404
+            
+        else:
+            return jsonify({
+                "message": "Data successfully retrived",
+                "status": 200,
+                "data": [note.info_buku() for note in lists]
+                }), 200
+    return jsonify({
+            "message": "Data not found",
+            "status": 404,
+            "data": None
+        }), 404 
 # Read by id
-@app.route("api/buku/<int:id_buku>", methods = ["GET"])
+@app.route("/read/buku/<int:id_buku>", methods = ["GET"])
 def read_buku_id(id_buku):
     with Session(engine) as session:
         lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
@@ -420,7 +480,7 @@ def read_buku_id(id_buku):
             "data": None
         }), 404 
 # Update
-@app.route("api/buku/<int:id_buku>", methods = ["PUT"])
+@app.route("/update/buku/<int:id_buku>", methods = ["PUT"])
 def update_buku(id_buku):
     input_data = request.get_json(silent = True) or {}
     judul = input_data.get("judul")
@@ -428,6 +488,7 @@ def update_buku(id_buku):
     kategori = input_data.get("kategori")
     isbn = input_data.get("isbn")
     jumlah_buku = input_data.get("jumlah_buku")
+    tahun_terbit = input_data.get("tahun_terbit")
     
     if not judul and not penulis and not kategori and not isbn and not jumlah_buku:
         return jsonify({
@@ -451,6 +512,8 @@ def update_buku(id_buku):
                     a.isbn = input_data["isbn"]
                 if "jumlah_buku" in input_data:
                     a.jumlah_buku = input_data["jumlah_buku"]
+                if "tahun_terbit" in input_data:
+                    a.tahun_tebrit = input_data["tahun_terbit"]
                 session.commit()
                 return jsonify({
                     "message": "Data successfully updated",
@@ -463,7 +526,7 @@ def update_buku(id_buku):
             "data": None
         }), 404 
 # Delete
-@app.route("api/buku/<int:id_buku", methods = ["DELETE"])
+@app.route("/delete/buku/<int:id_buku>", methods = ["DELETE"])
 def delete_buku(id_buku):
     with Session(engine) as session:
         lists = session.scalars(select(Buku).order_by(Buku.id_buku)).all()
