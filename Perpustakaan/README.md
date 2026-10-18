@@ -39,6 +39,7 @@
    | Database Name   | `perpustakaan`  | The name of the database created in Step 8.                                                                                                    |
    
    **Important**: Make sure the username, password, host, port, and database name match your MySQL configuration. If you use a password, add it after root: in the connection URL.
+   
    **Note**: This configuration assumes MySQL is running locally and the root account has no password. For production environments, use a dedicated database user with a strong password instead of the root account.
     
 ## 🚀 To run the application
