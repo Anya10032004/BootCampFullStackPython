@@ -14,7 +14,7 @@
    <img src="laragon.png" alt="Laragon Control Panel" width="600">
 7. Open the Databases page. Look for the Databases tab at the top of the page and click it.
 
-    <img src="to_database_button 1" alt="Laragon Control Panel" width="600">
+    <img src="to_database_button1.png" alt="Laragon Control Panel" width="600">
     
     <img src="to_database_button 2" alt="Laragon Control Panel" width="600">
     
