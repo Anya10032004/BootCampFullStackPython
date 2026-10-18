@@ -11,12 +11,14 @@
     - Password: Leave this field empty.
 4. Enter root as the username, leave the password field blank, and click Log in.
 5. When you finally login to the phpMyAdmin page, you will see this page:
-   <img src="laragon.png" alt="Laragon Control Panel" width="600">
+   <img src="images/laragon.png" alt="Laragon Control Panel" width="600">
 7. In the navigation bar above, pick the "SQL" button
 
-    <img src="to_database_button1.png" alt="Laragon Control Panel" width="600">
+    <img src="images/navigation_bar.png" alt="navigation_bar" width="600">
     
-    <img src="to_database_button 2" alt="Laragon Control Panel" width="600">
+    <img src="images/sql_button.png" alt="sql_button" width="600">
+    
+    <img src="images/SQLQueryEditor.png" alt="SQLQueryEditor" width="600">
     
 ## 🚀 To run the application
 ## ⚙️ API testing
