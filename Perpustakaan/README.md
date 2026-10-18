@@ -19,6 +19,12 @@
     <img src="images/sql_button.png" alt="sql_button" width="600">
     
     <img src="images/SQLQueryEditor.png" alt="SQLQueryEditor" width="600">
+8.In the the SQL Query Editor Create the database name "perpustakaan" with the following Query:
+
+   ```
+   CREATE DATABASE perpustakaan;
+   ```
+
     
 ## 🚀 To run the application
 ## ⚙️ API testing
