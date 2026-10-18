@@ -21,10 +21,24 @@
     <img src="images/SQLQueryEditor.png" alt="SQLQueryEditor" width="600">
 8.In the the SQL Query Editor Create the database name "perpustakaan" with the following Query:
 
-   ```
-   CREATE DATABASE perpustakaan;
-   ```
-
+     ```
+     CREATE DATABASE perpustakaan;
+     ```
+9. Determine configuration in the "main.py":
+   Open main.py and find the database connection configuration. Set it to the following URL:
+        ```
+        mysql+pymysql://root:@localhost:3306/perpustakaan
+        ```
+   | Component       | Value           | Description                                                                                                                                    |
+   |-----------------|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+   | Database Driver | `mysql+pymysql` | Specifies MySQL as the database and PyMySQL as the Python driver.                                                                              |
+   | Username        | `root`          | The MySQL username used to connect to the database.                                                                                            |
+   | Password        | Empty           | No password is configured for this setup.                                                                                                      |
+   | Host            | `localhost`     | Connects to MySQL running on your own computer. If MySQL runs on another server, replace `localhost` with the server's IP address or hostname. |
+   | Port            | `3306`          | The default MySQL port. Change it if your MySQL server uses a different port.                                                                  |
+   | Database Name   | `perpustakaan`  | The name of the database created in Step 8.                                                                                                    |
+   
+    
     
 ## 🚀 To run the application
 ## ⚙️ API testing
