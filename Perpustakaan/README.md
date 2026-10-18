@@ -12,7 +12,7 @@
 4. Enter root as the username, leave the password field blank, and click Log in.
 5. When you finally login to the phpMyAdmin page, you will see this page:
    <img src="laragon.png" alt="Laragon Control Panel" width="600">
-7. Open the Databases page. Look for the Databases tab at the top of the page and click it.
+7. In the navigation bar above, pick the "SQL" button
 
     <img src="to_database_button1.png" alt="Laragon Control Panel" width="600">
     
