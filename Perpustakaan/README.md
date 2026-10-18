@@ -12,7 +12,7 @@
 4. Enter root as the username, leave the password field blank, and click Log in.
 5. When you finally login to the phpMyAdmin page, you will see this page:
    <img src="images/laragon.png" alt="Laragon Control Panel" width="600">
-7. In the navigation bar above, pick the "SQL" button
+7. In the navigation bar above, pick the "SQL" button, and it will lead you to the SQL Query Editor
 
     <img src="images/navigation_bar.png" alt="navigation_bar" width="600">
     
