@@ -21,9 +21,7 @@
     <img src="images/SQLQueryEditor.png" alt="SQLQueryEditor" width="600">
 8.In the the SQL Query Editor Create the database name "perpustakaan" with the following Query:
 
-     ```
      CREATE DATABASE perpustakaan;
-     ```
      
 9. Determine configuration in the "main.py":
    Open main.py and find the database connection configuration. Set it to the following URL:
