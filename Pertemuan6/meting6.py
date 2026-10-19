@@ -97,7 +97,8 @@ def main(): # Ini adalah fungsi untuk menampilkan halaman utama
 @app.route("/create_note", methods=["POST"]) # Ini adalah perintah untuk membuat data
 def create_note():
     # ambil data dari user
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True) or {} # silent = True means "If the request contains valid JSON, it returns the parsed Python data, such as a dictionary.
+                                               # If the JSON is invalid or cannot be parsed, it returns None instead of raising a parsing error."
     deskripsi = data.get("deskripsi")
     status = data.get("status", "TODO")
     
@@ -261,7 +262,10 @@ def create_user():
     
     # Access database
     with Session(engine) as session:
-        new_user = User(username=user_name, email=user_email, password=user_password)
+        new_user = User(username=user_name, 
+                        email=user_email, 
+                        password=user_password
+                        )
         session.add(new_user)
         session.commit()
         return jsonify(
@@ -392,3 +396,4 @@ if __name__ == "__main__":
 #       note_routes.py — API Note
 #       user_routes.py — API User
 #   requirements.txt — daftar library Python
+# Endpoint --> it's the url
