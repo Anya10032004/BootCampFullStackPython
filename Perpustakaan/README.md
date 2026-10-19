@@ -61,9 +61,9 @@ Run the ```app.py```:
 If it works the output will be:
 
 ```
- * Serving Flask app 'app'
+ * Serving Flask app 'main'
  * Debug mode: on
- * Running on http://127.0.0.1:5000
+ * Running on http://127.0.0.1:5000 
 ```
 The ```penulis```, ```kategori```, and ```buku``` tabbles will be automattically made when we run the app 
     
