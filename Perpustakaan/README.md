@@ -56,9 +56,7 @@ This installs the Python libraries required by the project.
 
 Run the ```app.py```:
 
-    ```   
     python main.py
-    ```
     
 If it works the output will be:
 
