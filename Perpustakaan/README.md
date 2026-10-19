@@ -22,10 +22,12 @@
 8.In the the SQL Query Editor Create the database name "perpustakaan" with the following Query:
 
      CREATE DATABASE perpustakaan;
-     
-
-9. Determine configuration in the "main.py":
-   Open main.py and find the database connection configuration. Set it to the following URL:
+    
+## 🚀 To run the application
+### 1. Clone the Repository
+### 2. Open the Project Folder
+### 3. Configure the Database Connection
+  Open main.py and find the database connection configuration. Set it to the following URL:
         ```
         mysql+pymysql://root:@localhost:3306/perpustakaan
         ```
@@ -42,5 +44,4 @@
    
    **Note**: This configuration assumes MySQL is running locally and the root account has no password. For production environments, use a dedicated database user with a strong password instead of the root account.
     
-## 🚀 To run the application
 ## ⚙️ API testing
