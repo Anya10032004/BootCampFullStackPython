@@ -23,6 +23,7 @@
 
      CREATE DATABASE perpustakaan;
      
+
 9. Determine configuration in the "main.py":
    Open main.py and find the database connection configuration. Set it to the following URL:
         ```
