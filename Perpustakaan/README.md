@@ -24,9 +24,66 @@
      CREATE DATABASE perpustakaan;
     
 ## 🚀 To run the application
-### 1. Clone the Repository
-### 2. Open the Project Folder
-### 3. Configure the Database Connection
+
+### 1. Make a folder to make 
+Create a new folder on your Desktop where you want to store your project.
+
+For example, you can create a folder named ```Github project```.
+
+### 2. Clone the Repository
+Open your terminal (Command Prompt, PowerShell, or VS Code terminal) and run
+
+
+For example, if you created GitHub Projects on your Desktop, run:
+```
+cd Desktop
+cd "GitHub Projects"
+```
+Next, run the following command to clone the repository from GitHub:
+
+```
+git clone https://github.com/Anya10032004/RestAPIMiniProject_Perpustakaan
+```
+Git will download the repository and create a new folder containing the project files.
+
+### 3. Open the Project Folder
+Next, enter the downloaded folder by running:
+
+```
+cd "<Folder_location>\RestAPIMiniProject_Perpustakaan"
+```
+### 4. Make a virtual enviroment
+After that, we will make a virtual enviroment with a name perpustakaan, we will need to the following commands:
+
+```
+python -m venv perpustakaan
+```
+
+### 5. Activate the virtual enviroment
+Commands to  activate the virtual enviroment is based on terminal you will use:
+
+- Windows PowerShell:
+
+   ```
+   .\perpustakaan\Scripts\Activate.ps1
+   ```
+   
+- Windows Command Prompt (CMD):
+  
+   ```
+   .\perpustakaan\Scripts\Activate.ps1
+   ```
+   
+- Git Bash / Linux / macOS:
+  
+  ```
+  source perpustakaan/Scripts/activate
+  ```
+You can tell that the virtual environment is active when you see the prefix (perpustakaan) at the beginning of your terminal prompt.
+
+### 6. Install the Required Libraries
+
+### 7. Configure the Database Connection
   Open main.py and find the database connection configuration. Set it to the following URL:
         ```
         mysql+pymysql://root:@localhost:3306/perpustakaan
@@ -44,15 +101,13 @@
    
    **Note**: This configuration assumes MySQL is running locally and the root account has no password. For production environments, use a dedicated database user with a strong password instead of the root account.
 
-### 4. Make a virtual enviroment
-### 5. Activate the virtual enviroment
-### 6. Install the Required Libraries
+
 
 ```   
 pip install -r requirements.txt
 ```
 This installs the Python libraries required by the project.
-### 7. Run the app
+### 8. Run the app
 
 Run the ```app.py```:
 
