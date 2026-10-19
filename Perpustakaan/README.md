@@ -43,5 +43,27 @@
    **Important**: Make sure the username, password, host, port, and database name match your MySQL configuration. If you use a password, add it after root: in the connection URL.
    
    **Note**: This configuration assumes MySQL is running locally and the root account has no password. For production environments, use a dedicated database user with a strong password instead of the root account.
+
+### 4. Make a virtual enviroment
+### 5. Activate the virtual enviroment
+### 6. Install the Required Libraries
+
+```   
+pip install -r requirements.txt
+```
+This installs the Python libraries required by the project.
+### 7. Run the app
+Run the ```app.py```:
+    ```   
+    python main.py
+    ```
+If it works the output will be:
+
+```
+ * Serving Flask app 'app'
+ * Debug mode: on
+ * Running on http://127.0.0.1:5000
+```
+
     
 ## ⚙️ API testing
