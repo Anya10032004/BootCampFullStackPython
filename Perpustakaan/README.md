@@ -81,7 +81,11 @@ Commands to  activate the virtual enviroment is based on terminal you will use:
   ```
 You can tell that the virtual environment is active when you see the prefix (perpustakaan) at the beginning of your terminal prompt.
 
-### 6. Install the Required Libraries
+### 6. Install the Required Libraries from ```requirements.txt```
+After the virtual enviroment is active, we will need to install some libraries 
+```
+pip install -r requirements.txt
+```
 
 ### 7. Configure the Database Connection
   Open main.py and find the database connection configuration. Set it to the following URL:
