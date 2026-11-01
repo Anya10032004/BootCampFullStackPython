@@ -1,0 +1,20 @@
+[
+    {
+        "id_user": 3,
+        "username": "kaka",
+        "email": "tataa@gmail.com",
+        "password": "lalaa3333",
+        "role": "user hahah",
+        "created_at": "2026-10-09T20:53:58.313495",
+        "updated_at": "2026-10-09T20:53:58.313511"
+    },
+    {
+        "id_user": 1,
+        "username": "OKKK",
+        "email": "tataa@gmail.com",
+        "password": "lalaa3333",
+        "role": "user hahah",
+        "created_at": "2026-10-09T20:58:01.928074",
+        "updated_at": "2026-10-09T20:59:34.428628"
+    }
+]

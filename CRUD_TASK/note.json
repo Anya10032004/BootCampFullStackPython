@@ -1,0 +1,18 @@
+[
+    {
+        "id_note": 11,
+        "id_user": 30,
+        "title": "lala",
+        "content": "AGGGGGGGGGGG hshsh",
+        "created_at": "2026-10-09T21:26:46.383945",
+        "updated_at": "2026-10-09T21:48:53.753442"
+    },
+    {
+        "id_note": 17,
+        "id_user": 43,
+        "title": "Matematika FUNN",
+        "content": "hsgfesgfjhdgfjhdgjgfshgfsdj",
+        "created_at": "2026-10-09T21:27:28.261107",
+        "updated_at": "2026-10-09T21:27:28.261115"
+    }
+]
