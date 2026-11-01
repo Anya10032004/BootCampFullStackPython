@@ -1,0 +1,3 @@
+To do list:
+1. Kok filter ? untuk judul masih hatus diperbaiki
+2. sesuaikan dengan kriteria soal
